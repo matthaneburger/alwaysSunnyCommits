@@ -2,10 +2,9 @@ name: Monty Python Commits
 
 on:
   schedule:
-    - cron: "*/20 * * * *"
+    - cron: "*/30 * * * *"
   push:
     branches:
-      - main
       - dev
   workflow_dispatch:
 
