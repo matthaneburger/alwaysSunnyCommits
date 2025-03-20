@@ -2,15 +2,14 @@ name: Random Commit Booster
 
 on:
   schedule:
-    - cron: '0 11 * * *'  #6am EST
-    - cron: '0 17 * * *' #12pm EST
-    - cron: '0 21 * * *' #4pm EST
-    - cron: '0 1 * * *' #8pm EST
-  
+    - cron: '0 11 * * *'  # 6 AM EST
+    - cron: '0 17 * * *'  # 12 PM EST
+    - cron: '0 21 * * *'  # 4 PM EST
+    - cron: '0 1 * * *'   # 8 PM EST
   push:
     branches:
-      - main #runs after merging/pushing to main brnch
-  workflow_dispatch:  #run manually
+      - main
+  workflow_dispatch:
 
 jobs:
   random-commits:
@@ -19,18 +18,32 @@ jobs:
     permissions:
       contents: write
 
+    env: # Declare env vars at the job level
+      GIT_USER_NAME: GitHub Action Bot
+      GIT_USER_EMAIL: action@github.com
+
     steps:
       - name: Checkout repo
         uses: actions/checkout@v4
 
+      - name: Load Git User Config
+        run: |
+          if [ -f .git-user ]; then
+            source .git-user
+            echo "Using custom Git user config: $GIT_USER_NAME, $GIT_USER_EMAIL"
+            echo "GIT_USER_NAME=$GIT_USER_NAME" >> $GITHUB_ENV
+            echo "GIT_USER_EMAIL=$GIT_USER_EMAIL" >> $GITHUB_ENV
+          else
+            echo "No .git-user found, using defaults."
+          fi
+
       - name: Setup Git config
         run: |
-          git config --local user.email "$GIT_USER_NAME"
-          git config --local user.name "$GIT_USER_EMAIL"
+          git config --local user.name "$GIT_USER_NAME"
+          git config --local user.email "$GIT_USER_EMAIL"
 
       - name: Add random delay before starting
         run: |
-          # Random delay: 0-600 seconds (0-10 minutes)
           DELAY=$(( RANDOM % 601 ))
           echo "Sleeping for $DELAY seconds to randomize commit time..."
           sleep $DELAY
@@ -47,7 +60,6 @@ jobs:
             git add update-log.txt
             COMMIT_MSG="Random commit $RANDOM on $(date '+%Y-%m-%d %H:%M:%S')"
             git commit -m "$COMMIT_MSG"
-            # Add optional short delay between commits (optional: 0-30 seconds)
             SHORT_DELAY=$(( RANDOM % 31 ))
             echo "Sleeping $SHORT_DELAY seconds before next commit..."
             sleep $SHORT_DELAY
