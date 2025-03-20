@@ -1,53 +1,67 @@
-name: Random Commit Booster
+name: Monty Python Commits
 
 on:
   schedule:
-    - cron: '0 11 * * *'  #6am EST
-    - cron: '0 17 * * *' #12pm EST
-    - cron: '0 21 * * *' #4pm EST
-    - cron: '0 1 * * *' #8pm EST
-  
+    - cron: '0 11 * * *'  # 6 AM EST
+    - cron: '0 17 * * *'  # 12 PM EST
+    - cron: '0 21 * * *'  # 4 PM EST
+    - cron: '0 1 * * *'   # 8 PM EST
   push:
     branches:
-      - main #runs after merging/pushing to main brnch
-  workflow_dispatch:  #run manually
+      - main
+      - dev
+  workflow_dispatch:
 
 jobs:
-  random-commits:
+  monty-commits:
     runs-on: ubuntu-latest
 
     permissions:
       contents: write
 
+    env:
+      GIT_USER_NAME: "Matt Haneburger"
+      GIT_USER_EMAIL: "matthewhaneburger@gmail.com"
+
     steps:
       - name: Checkout repo
         uses: actions/checkout@v4
 
-      - name: Setup Git config
+      - name: Set up Git global config
         run: |
-          git config --local user.email "$GIT_USER_NAME"
-          git config --local user.name "$GIT_USER_EMAIL"
+          git config --global user.name "$GIT_USER_NAME"
+          git config --global user.email "$GIT_USER_EMAIL"
 
       - name: Add random delay before starting
         run: |
-          # Random delay: 0-600 seconds (0-10 minutes)
           DELAY=$(( RANDOM % 601 ))
           echo "Sleeping for $DELAY seconds to randomize commit time..."
           sleep $DELAY
 
-      - name: Generate random commits
+      - name: Generate random commits with Monty Python quotes
         run: |
           NUM_COMMITS=$(( ( RANDOM % 3 ) + 1 ))  # 1-3 commits
           echo "Generating $NUM_COMMITS commits..."
 
+          QUOTES_FILE="quotes.txt"
+
+          if [ ! -f "$QUOTES_FILE" ]; then
+            echo "No quotes file found! Exiting."
+            exit 1
+          fi
+
+          TOTAL_QUOTES=$(wc -l < "$QUOTES_FILE")
+
           for i in $(seq 1 $NUM_COMMITS)
           do
-            echo "Commit #$i"
-            echo "Random update $RANDOM at $(date)" >> update-log.txt
+            RANDOM_LINE=$(( ( RANDOM % TOTAL_QUOTES ) + 1 ))
+            QUOTE=$(sed "${RANDOM_LINE}q;d" "$QUOTES_FILE")
+
+            echo "Commit #$i with quote: $QUOTE"
+            echo "Monty update at $(date)" >> update-log.txt
             git add update-log.txt
-            COMMIT_MSG="Random commit $RANDOM on $(date '+%Y-%m-%d %H:%M:%S')"
-            git commit -m "$COMMIT_MSG"
-            # Add optional short delay between commits (optional: 0-30 seconds)
+            git commit -m "$QUOTE"
+
             SHORT_DELAY=$(( RANDOM % 31 ))
             echo "Sleeping $SHORT_DELAY seconds before next commit..."
             sleep $SHORT_DELAY
