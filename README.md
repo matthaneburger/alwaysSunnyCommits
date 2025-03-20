@@ -1,6 +1,6 @@
-# randomCommitsTest
+# montyPythonCommits
 
-Testing GitHub Workflows to see if I can randomly commit to this repository every day because apparently, GitHub Commit History matters and I don't feel like retroactively changing my git commit history. 
+This repository commits a MPATHG quote on a scheduled job to fake my GitHub commit history because it matters for some reason. :) 
 
 I have no shame. 
 
