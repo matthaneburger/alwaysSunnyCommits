@@ -18,24 +18,13 @@ jobs:
     permissions:
       contents: write
 
-    env: # Declare env vars at the job level
-      GIT_USER_NAME: GitHub Action Bot
-      GIT_USER_EMAIL: action@github.com
+    env:
+      GIT_USER_NAME: "Matt Haneburger"
+      GIT_USER_EMAIL: "matthewhaneburger@gmail.com"
 
     steps:
       - name: Checkout repo
         uses: actions/checkout@v4
-
-      - name: Load Git User Config
-        run: |
-          if [ -f .git-user ]; then
-            source .git-user
-            echo "Using custom Git user config: $GIT_USER_NAME, $GIT_USER_EMAIL"
-            echo "GIT_USER_NAME=$GIT_USER_NAME" >> $GITHUB_ENV
-            echo "GIT_USER_EMAIL=$GIT_USER_EMAIL" >> $GITHUB_ENV
-          else
-            echo "No .git-user found, using defaults."
-          fi
 
       - name: Setup Git config
         run: |
