@@ -2,8 +2,15 @@ name: Random Commit Booster
 
 on:
   schedule:
-    - cron: '0 15 * * *'  # 10 AM EST = 15:00 UTC
-  workflow_dispatch:  # Optional manual trigger
+    - cron: '0 11 * * *'  #6am EST
+    - cron: '0 17 * * *' #12pm EST
+    - cron: '0 21 * * *' #4pm EST
+    - cron: '0 1 * * *' #8pm EST
+  
+  push:
+    branches:
+      - main #runs after merging/pushing to main brnch
+  workflow_dispatch:  #run manually
 
 jobs:
   random-commits:
@@ -12,15 +19,14 @@ jobs:
     permissions:
       contents: write
 
-
     steps:
       - name: Checkout repo
         uses: actions/checkout@v4
 
       - name: Setup Git config
         run: |
-          git config --local user.email "action@github.com"
-          git config --local user.name "GitHub Action Bot"
+          git config --local user.email "$GIT_USER_NAME"
+          git config --local user.name "$GIT_USER_EMAIL"
 
       - name: Add random delay before starting
         run: |
