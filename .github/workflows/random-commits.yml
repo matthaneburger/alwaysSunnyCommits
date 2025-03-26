@@ -2,7 +2,7 @@ name: Monty Python Commits
 
 on:
   schedule:
-    - cron: '30 * * * *'
+    - cron: '8,28,48 * * * *'
   push:
     branches:
       - dev
