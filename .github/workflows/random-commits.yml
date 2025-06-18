@@ -30,7 +30,7 @@ jobs:
 
       - name: Generate random commits with Monty Python quotes
         run: |
-          NUM_COMMITS=$(( ( RANDOM % 105 ) + 1 ))  # 1-105 commits
+          NUM_COMMITS=$(( ( RANDOM % 100 ) + 1 ))  # 1-100 commits
           echo "Generating $NUM_COMMITS commits..."
 
           QUOTES_FILE="quotes.txt"
@@ -51,6 +51,10 @@ jobs:
             echo "Monty update at $(date)" >> update-log.txt
             git add update-log.txt
             git commit -m "$QUOTE"
+
+            SHORT_DELAY=$(( RANDOM % 31 ))
+            echo "Sleeping $SHORT_DELAY seconds before next commit..."
+            sleep $SHORT_DELAY
           done
 
       - name: Push commits
