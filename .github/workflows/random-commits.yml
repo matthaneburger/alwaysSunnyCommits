@@ -2,7 +2,7 @@ name: Monty Python Commits
 
 on:
   schedule:
-    - cron: '48 * * * *'
+    - cron: '0 9,21 * * *'  # Twice daily at 09:00 and 21:00 UTC
   push:
     branches:
       - dev
@@ -28,15 +28,9 @@ jobs:
           git config --global user.name "$GIT_USER_NAME"
           git config --global user.email "$GIT_USER_EMAIL"
 
-      - name: Add random delay before starting
-        run: |
-          DELAY=$(( RANDOM % 601 ))
-          echo "Sleeping for $DELAY seconds..."
-          sleep $DELAY
-
       - name: Generate random commits with Monty Python quotes
         run: |
-          NUM_COMMITS=$(( ( RANDOM % 3 ) + 1 ))  # 1-3 commits
+          NUM_COMMITS=$(( ( RANDOM % 105 ) + 1 ))  # 1-105 commits
           echo "Generating $NUM_COMMITS commits..."
 
           QUOTES_FILE="quotes.txt"
@@ -57,10 +51,6 @@ jobs:
             echo "Monty update at $(date)" >> update-log.txt
             git add update-log.txt
             git commit -m "$QUOTE"
-
-            SHORT_DELAY=$(( RANDOM % 31 ))
-            echo "Sleeping $SHORT_DELAY seconds before next commit..."
-            sleep $SHORT_DELAY
           done
 
       - name: Push commits
