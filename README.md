@@ -1,3 +1,3 @@
-# montyPythonCommits
+# alwaysSunnyQuotesCommits
 
-Automated commits with MPATHG quotes!
+Automated commits with IASIP quotes!
